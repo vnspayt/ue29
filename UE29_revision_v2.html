@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UE29 — Méthodologies de la pratique psychologique</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #fdf8f2;
+    --card-bg: #ffffff;
+    --neuro: #b8dce8;
+    --neuro-soft: #e8f5fa;
+    --neuro-dark: #3a7a96;
+    --psych: #f4c2d7;
+    --psych-soft: #fdeef5;
+    --psych-dark: #9c4a6b;
+    --cogn: #c7e8c4;
+    --cogn-soft: #eef8ed;
+    --cogn-dark: #3d7a38;
+    --dev: #f5ddb5;
+    --dev-soft: #fdf5e6;
+    --dev-dark: #8a5c12;
+    --proba: #e5d4f5;
+    --proba-soft: #f5eeff;
+    --proba-dark: #6a3d96;
+    --text: #2c2a28;
+    --muted: #7a7068;
+    --border: #e8e2d8;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #b8dce8 0%, #f4c2d7 50%, #c7e8c4 100%);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1e1e1e;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+
+  header p { color: #444; font-size: 0.95rem; font-weight: 400; }
+
+  /* ======= TAB SYSTEM ======= */
+  .tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(253,248,242,0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .tab-btn {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 500;
+    padding: 0.85rem 1.4rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn[data-tab="neuro"].active { color: var(--neuro-dark); border-bottom-color: var(--neuro-dark); background: var(--neuro-soft); }
+  .tab-btn[data-tab="psych"].active { color: var(--psych-dark); border-bottom-color: var(--psych-dark); background: var(--psych-soft); }
+  .tab-btn[data-tab="cogn"].active  { color: var(--cogn-dark);  border-bottom-color: var(--cogn-dark);  background: var(--cogn-soft); }
+  .tab-btn[data-tab="dev"].active   { color: var(--dev-dark);   border-bottom-color: var(--dev-dark);   background: var(--dev-soft); }
+
+  /* ======= PANELS ======= */
+  .tab-panel {
+    display: none;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.2rem 1.5rem 4rem;
+  }
+  .tab-panel.active { display: block; }
+
+  /* ======= SECTION HEADER ======= */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.6rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .section-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+  }
+
+  #panel-neuro .section-dot { background: var(--neuro-dark); }
+  #panel-neuro .section-header h2 { color: var(--neuro-dark); }
+  #panel-psych .section-dot { background: var(--psych-dark); }
+  #panel-psych .section-header h2 { color: var(--psych-dark); }
+  #panel-cogn  .section-dot { background: var(--cogn-dark); }
+  #panel-cogn  .section-header h2 { color: var(--cogn-dark); }
+  #panel-dev   .section-dot { background: var(--dev-dark); }
+  #panel-dev   .section-header h2 { color: var(--dev-dark); }
+
+  /* ======= CARDS ======= */
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow);
+    border-left: 4px solid transparent;
+  }
+
+  #panel-neuro .card { border-left-color: var(--neuro); }
+  #panel-psych .card { border-left-color: var(--psych); }
+  #panel-cogn  .card { border-left-color: var(--cogn); }
+  #panel-dev   .card { border-left-color: var(--dev); }
+
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+
+  #panel-neuro .card h3 { color: var(--neuro-dark); }
+  #panel-psych .card h3 { color: var(--psych-dark); }
+  #panel-cogn  .card h3 { color: var(--cogn-dark); }
+  #panel-dev   .card h3 { color: var(--dev-dark); }
+
+  .card p, .card li { font-size: 0.92rem; color: var(--text); margin-bottom: 0.3rem; }
+  .card ul, .card ol { padding-left: 1.3rem; margin-top: 0.3rem; }
+  .card li { margin-bottom: 0.25rem; }
+
+  /* ======= DETAILS ======= */
+  details { margin-bottom: 0.9rem; }
+
+  summary {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.93rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  #panel-neuro summary { background: var(--neuro-soft); color: var(--neuro-dark); }
+  #panel-psych summary { background: var(--psych-soft); color: var(--psych-dark); }
+  #panel-cogn  summary { background: var(--cogn-soft);  color: var(--cogn-dark); }
+  #panel-dev   summary { background: var(--dev-soft);   color: var(--dev-dark); }
+
+  summary::before { content: "▶ "; font-size: 0.65rem; }
+  details[open] summary::before { content: "▼ "; }
+
+  details[open] {
+    background: var(--card-bg);
+    border-radius: 0 0 8px 8px;
+    box-shadow: var(--shadow);
+    padding-bottom: 0.5rem;
+  }
+
+  .details-body { padding: 1rem 1.2rem; font-size: 0.9rem; }
+  .details-body ul, .details-body ol { padding-left: 1.2rem; }
+  .details-body li { margin-bottom: 0.25rem; }
+  .details-body p { margin-bottom: 0.5rem; }
+
+  /* ======= UTILITIES ======= */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 620px) {
+    .two-col { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.7rem; }
+    .tab-btn { padding: 0.7rem 0.7rem; font-size: 0.75rem; }
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.3rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tag-tool { background: #e8eaf6; color: #283593; }
+  .tag-key  { background: #ffe0b2; color: #7a4100; }
+  .tag-attn { background: #fce4ec; color: #880e4f; }
+  .tag-exam { background: #e8f5e9; color: #1b5e20; }
+
+  .warning-box {
+    background: #fff8e1;
+    border-left: 4px solid #f9a825;
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    font-size: 0.88rem;
+    margin: 0.7rem 0;
+  }
+  .warning-box strong { color: #e65100; }
+
+  .info-box {
+    background: var(--neuro-soft);
+    border-left: 4px solid var(--neuro-dark);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    font-size: 0.88rem;
+    margin: 0.7rem 0;
+  }
+
+  .schema-box {
+    background: #f9f5ff;
+    border: 1px solid #d9c8f5;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    line-height: 1.9;
+    margin: 0.8rem 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.7rem 0; }
+  th { padding: 0.5rem 0.7rem; text-align: left; font-weight: 500; }
+  td { padding: 0.4rem 0.7rem; border-top: 1px solid var(--border); }
+  #panel-neuro th { background: var(--neuro); color: var(--neuro-dark); }
+  #panel-psych th { background: var(--psych); color: var(--psych-dark); }
+  #panel-cogn  th { background: var(--cogn);  color: var(--cogn-dark); }
+  #panel-dev   th { background: var(--dev);   color: var(--dev-dark); }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .sub-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--neuro-dark);
+    margin: 1.6rem 0 0.8rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--neuro);
+  }
+
+  #panel-psych .sub-title { color: var(--psych-dark); border-left-color: var(--psych); }
+  #panel-cogn  .sub-title { color: var(--cogn-dark);  border-left-color: var(--cogn); }
+  #panel-dev   .sub-title { color: var(--dev-dark);   border-left-color: var(--dev); }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>UE29 — Méthodologies de la pratique psychologique</h1>
+  <p>Licence 3 · Université de Caen Normandie · 2024-2025</p>
+</header>
+
+<!-- ======= TAB BAR ======= -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="neuro">🧠 Neuropsychologie</button>
+  <button class="tab-btn" data-tab="dev">👶 Développement</button>
+  <button class="tab-btn" data-tab="psych">🔍 Clinique</button>
+  <button class="tab-btn" data-tab="cogn">📊 Cognitif</button>
+</div>
+
+<!-- ============================================================ -->
+<!--                  ONGLET NEUROPSYCHOLOGIE                     -->
+<!-- ============================================================ -->
+<div id="panel-neuro" class="tab-panel active">
+  <div class="section-header">
+    <div class="section-dot"></div>
+    <h2>Neuropsychologie — Évaluation de la mémoire</h2>
+  </div>
+  <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.4rem;">Enseignante CM : Hélène Beaunieux · TD : Ludivine Ritz</p>
+
+  <!-- 1. SYSTÈMES MNÉSIQUES -->
+  <div class="card">
+    <h3>Les systèmes mnésiques — MNESIS (Eustache & Desgranges, 2016)</h3>
+    <p>Un système mnésique est caractérisé par :</p>
+    <ul>
+      <li>Des <strong>règles de fonctionnement spécifiques</strong></li>
+      <li>Un <strong>réseau cérébral dédié</strong></li>
+      <li>Une <strong>double dissociation</strong> : observation d'au moins 2 patients avec des profils radicalement différents, permettant de supposer leur indépendance fonctionnelle (ex : patient HM)</li>
+    </ul>
+    <p style="margin-top:0.6rem;">Les systèmes mnésiques fonctionnent séparément mais sont <strong>interactifs et synergiques</strong>. Quand un système est altéré, cela a des répercussions sur les autres.</p>
+    <div class="warning-box"><strong>⚠ À ne pas confondre :</strong> Un système mnésique ≠ un type de mémoire (verbal/non verbal) ≠ un processus fonctionnel (encodage, stockage, récupération) ≠ un type de tâche (implicite/explicite) ≠ un mode de récupération.</div>
+  </div>
+
+  <div class="card">
+    <h3>Les 5 systèmes mnésiques et leurs caractéristiques</h3>
+    <table>
+      <thead><tr><th>Système</th><th>Conscience</th><th>Substrats clés</th><th>Intérêt clinique</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mémoire épisodique</strong></td><td>Autonoétique (reviviscence)</td><td>Hippocampe, circuit de Papez, régions frontales</td><td>Le plus fragile, le plus fréquent en bilan</td></tr>
+        <tr><td><strong>Mémoire sémantique</strong></td><td>Noétique (familiarité)</td><td>Temporal antérieur bilatéral, lobe temporal gauche</td><td>Langage, gnosies, praxies, diagnostic DS/MA</td></tr>
+        <tr><td><strong>Mémoire procédurale</strong></td><td>Anoétique</td><td>Striatum, cervelet, ganglions de la base</td><td>Rééducation, mise en place d'automatismes</td></tr>
+        <tr><td><strong>MDT (buffer épisodique)</strong></td><td>—</td><td>Frontal dorso-latéral, pariétal</td><td>Encodage, FE, interface MCT/MLT</td></tr>
+        <tr><td><strong>Mémoire perceptive (PRS)</strong></td><td>Anoétique</td><td>Cortex sensoriels primaires</td><td>Amorçage perceptif</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.6rem; font-size:0.88rem; color:var(--muted);">En bilan diagnostic, on se focalise sur <strong>MDT, ME, MS</strong> (pathologies neurodégénératives corticales : MA, DS, DFT, DCL). On évalue aussi la mémoire procédurale dans les bilans de prise en charge.</p>
+  </div>
+
+  <!-- Mémoire explicite / implicite -->
+  <details>
+    <summary>📌 Mémoire explicite vs implicite — rappels fondamentaux</summary>
+    <div class="details-body">
+      <p><strong>Mémoire explicite (Graf & Schacter, 1985)</strong> : récupération <em>consciente et intentionnelle</em>. S'oppose à la mémoire implicite selon 2 critères :</p>
+      <ul>
+        <li><strong>Niveau de conscience</strong> : la MI fonctionne sans récupération consciente ; la MEx requiert une récupération consciente</li>
+        <li><strong>Intentionnalité</strong> : MI = récupération non intentionnelle ; MEx = intentionnelle</li>
+      </ul>
+      <p style="margin-top:0.5rem;"><strong>Mémoire déclarative (Cohen & Squire, 1980)</strong> : opposée à la mémoire procédurale sur base de doubles dissociations. Regroupe ME + MS. Fonctionnement rapide, contrôlé, flexible.</p>
+      <p><strong>Mémoire implicite</strong> : inconsciente, non déclarative. Inclut effets d'amorçage et mémoire procédurale.</p>
+      <p style="margin-top:0.5rem;"><strong>Effets d'amorçage (Tulving & Schacter, 1990)</strong> : modification du traitement d'un stimulus suite à une présentation préalable, en l'absence de récupération consciente. <em>EA perceptif</em> (PRS) vs <em>EA sémantique/conceptuel</em>.</p>
+    </div>
+  </details>
+
+  <!-- 2. MÉMOIRE ÉPISODIQUE -->
+  <p class="sub-title">🔵 Mémoire épisodique</p>
+
+  <div class="card">
+    <h3>Définition & caractéristiques</h3>
+    <p>Système mnésique qui stocke des <strong>épisodes personnellement vécus inscrits dans un contexte spatio-temporel</strong> précis. Elle fonde notre <strong>sentiment d'identité (Self)</strong> — passé, présent, futur possible.</p>
+    <ul>
+      <li><strong>Conscience autonoétique</strong> (Tulving) : sentiment de reviviscence lors du rappel</li>
+      <li><strong>Voyage mental dans le temps</strong> : versant rétrospectif (passé) ET prospectif (futur)</li>
+      <li>Alimente la <strong>mémoire autobiographique</strong> (épis. + sémantique personnelle)</li>
+    </ul>
+    <div class="info-box">La mémoire épisodique est <strong>le système le plus fragile</strong> et le plus souvent évalué en bilan neuropsychologique. C'est aussi le plus fréquent dans les plaintes.</div>
+  </div>
+
+  <details>
+    <summary>🔵 Versants rétrograde & antérograde</summary>
+    <div class="details-body">
+      <p><strong>Versant rétrograde (passé)</strong> : récupération de souvenirs déjà encodés. Évaluation de la mémoire autobiographique épisodique (souvenirs précis, datés).</p>
+      <p><strong>Versant antérograde (futur)</strong> : formation de nouveaux souvenirs. On évalue l'encodage, les niveaux de conscience, le contexte, et la <strong>mémoire prospective</strong> (se souvenir de faire quelque chose dans le futur).</p>
+      <p style="margin-top:0.5rem;"><strong>Amnésies :</strong> un patient peut présenter une amnésie rétrograde (perte de souvenirs anciens) ou antérograde (incapacité à former de nouveaux souvenirs), ou les deux.</p>
+      <div class="warning-box"><strong>Gradient de Ribot</strong> : dans la MA, les souvenirs anciens sont mieux préservés que les récents (gradient normal). Dans la démence sémantique, le gradient est <em>inversé</em> : les souvenirs récents (épisodiques, préservés) sont mieux rappelés que les anciens.</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔵 Processus fonctionnels & bases cérébrales</summary>
+    <div class="details-body">
+      <div class="two-col">
+        <div>
+          <p><strong>Encodage</strong></p>
+          <p>Modulé par l'attention, les FE, les émotions (renforcent l'encodage), la richesse du réseau sémantique, la métamémoire. Peut être implicite (quotidien) ou explicite.</p>
+          <p>Plus la stratégie d'encodage vient du patient → meilleur encodage. Encodage profond = trace forte et durable (analyse sémantique du stimulus).</p>
+          <p><em>Bases cérébrales :</em> régions frontales dorso-latérales + pariétales (buffer épisodique)</p>
+        </div>
+        <div>
+          <p><strong>Stockage</strong></p>
+          <p>Court terme (MCT / buffer épisodique) → Long terme via le <strong>circuit de Papez</strong>.</p>
+          <p><em>Bases cérébrales :</em> hippocampe, gyrus parahippocampique, gyrus cingulaire, corps mamillaires. Le circuit de Papez est un circuit de <em>traitement</em>, pas de stockage à long terme → explique les amnésies partielles rétrogrades sur quelques années.</p>
+          <p><strong>Récupération</strong></p>
+          <p>Modulée par attention, FE, émotions, métamémoire. <em>Bases cérébrales :</em> régions frontales.</p>
+        </div>
+      </div>
+      <div class="warning-box"><strong>Règle fondamentale :</strong> Évaluer la mémoire sans évaluer l'attention ou les fonctions exécutives n'a pas de sens — ces processus sont interdépendants.</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔵 Troubles authentiques vs troubles apparents</summary>
+    <div class="details-body">
+      <p><strong>Troubles authentiques</strong> : atteinte directe de la mémoire épisodique (déficit du stockage de la trace mnésique).</p>
+      <ul>
+        <li>Rappel libre : très bas (- -)</li>
+        <li>Rappel indicé : peu ou pas amélioré (l'info n'est pas en mémoire)</li>
+        <li>Reconnaissance : perturbée (± ou abaissée)</li>
+        <li>Intrusions fréquentes</li>
+        <li>Perte d'informations marquée au rappel différé → <strong>déficit de consolidation</strong></li>
+      </ul>
+      <p style="margin-top:0.6rem;"><strong>Troubles apparents</strong> : conséquences de troubles exécutifs (déficit d'utilisation stratégique). Le patient n'est pas amnésique mais dysexécutif.</p>
+      <ul>
+        <li>Rappel libre : bas (- -)</li>
+        <li><strong>Amélioration avec indiçage</strong> : nette (+) — c'est le signe clé</li>
+        <li>Reconnaissance : normale ou quasi-normale</li>
+        <li>Pas de gradient temporel en mémoire autobiographique</li>
+      </ul>
+      <div class="info-box">Ne jamais se contenter d'un "score pathologique" : il faut détailler les résultats (encodage, consolidation, type de trouble) et faire le lien avec le tableau clinique.</div>
+    </div>
+  </details>
+
+  <!-- 3. MÉMOIRE SÉMANTIQUE -->
+  <p class="sub-title">🟢 Mémoire sémantique</p>
+
+  <div class="card">
+    <h3>Définition & organisation</h3>
+    <p>Mémoire des connaissances <strong>décontextualisées</strong> sur le monde : leur récupération ne s'accompagne pas de reviviscence, mais d'un état de <strong>conscience noétique</strong> (sentiment de familiarité).</p>
+    <p style="margin-top:0.5rem;">Elle regroupe : connaissances lexico-sémantiques, objets, animaux, personnes célèbres, connaissances culturelles, événements publics, sémantique personnelle.</p>
+    <p style="margin-top:0.5rem;"><strong>Modèle en réseau (Collins & Quillian)</strong> : organisation hiérarchique — domaines → catégories → sous-catégories → attributs. En cas d'atteinte, les <em>attributs spécifiques</em> sont perdus en premier (atteinte bottom-up).</p>
+  </div>
+
+  <details>
+    <summary>🟢 Dégradation centrale vs déficit d'accès</summary>
+    <div class="details-body">
+      <table>
+        <thead><tr><th>Dégradation centrale</th><th>Déficit d'accès</th></tr></thead>
+        <tbody>
+          <tr><td>Constance des erreurs</td><td>Inconstance des erreurs</td></tr>
+          <tr><td>Absence de facilitation par indiçage sémantique</td><td>Facilitation par indiçage sémantique</td></tr>
+          <tr><td>Effet de fréquence (items rares perdus en premier)</td><td>Pas d'effet de fréquence</td></tr>
+          <tr><td>Perte progressive des attributs spécifiques</td><td>Sensibilité aux distracteurs liés</td></tr>
+          <tr><td>Profil : démence sémantique (DS)</td><td>Profil : AVC, début MA</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:0.5rem;"><strong>Signes cliniques du trouble sémantique :</strong> manque du mot amodal, paraphasies verbales/gestuelles, agnosie amodale (toutes modalités), apraxie idéatoire, régularisations orthographiques (dysorthographie de surface), gradient de Ribot inversé.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🟢 Pathologies principales touchant la mémoire sémantique</summary>
+    <div class="details-body">
+      <p><strong>Démence sémantique (DS)</strong> — dégénérescence corticale</p>
+      <ul>
+        <li>Sujets âgés, atteinte bilatérale et asymétrique du <strong>lobe temporal antérieur</strong> (prédominance gauche)</li>
+        <li>Dégradation <em>amodale</em> du stock sémantique</li>
+        <li>Langage : manque du mot massif, troubles de la compréhension, aspects phonologiques et syntaxiques <em>préservés</em>, régularisations</li>
+        <li>Difficultés de reconnaissance des objets dans <em>toutes</em> les modalités</li>
+        <li><strong>Mémoire épisodique préservée</strong> (souvenirs précis et datés) — gradient de Ribot inversé</li>
+        <li>Égocentrisme cognitif progressif : se basent sur leur ME préservée</li>
+      </ul>
+      <p style="margin-top:0.6rem;"><strong>Maladie d'Alzheimer (MA)</strong></p>
+      <ul>
+        <li>Grande hétérogénéité : 40% des patients au stade léger présentent des troubles sémantiques</li>
+        <li>Début : déficit d'accès → évolution en dégradation centrale</li>
+        <li>Dégradation <em>conjointe</em> de la mémoire épisodique (trouble authentique) — ce qui la distingue de la DS</li>
+        <li>Gradient de Ribot <em>non inversé</em> (contrairement à la DS)</li>
+      </ul>
+      <p style="margin-top:0.6rem;"><strong>AVC (régions temporo-pariétales et préfrontales gauches)</strong></p>
+      <ul>
+        <li>Aphasie vasculaire avec déficits sémantiques importants</li>
+        <li>Déficits des processus d'activation des concepts au sein du réseau</li>
+        <li>Début très sévère (hématome), puis récupération progressive (résorption + plasticité cérébrale)</li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- 4. MDT -->
+  <p class="sub-title">🟡 Mémoire de travail (MDT)</p>
+
+  <div class="card">
+    <h3>Modèle de Baddeley — composantes</h3>
+    <p>La MDT est un système à <strong>capacité limitée</strong> permettant de maintenir et manipuler des informations pendant plusieurs dizaines de secondes au cours de tâches cognitives.</p>
+    <div class="two-col" style="margin-top:0.6rem;">
+      <div>
+        <ul>
+          <li><strong>Administrateur central</strong> : coordination, contrôle attentionnel</li>
+          <li><strong>Boucle phonologique</strong> : maintien verbal à court terme</li>
+          <li><strong>Calepin visuo-spatial</strong> : maintien des infos visuo-spatiales</li>
+          <li><strong>Buffer épisodique</strong> (ajout tardif) : interface multimodale, lien entre MCT et MLT</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong>Rôle du buffer épisodique :</strong> maintien d'informations multimodales sur un temps court ; interface entre les composantes de la MDT et les systèmes de MLT (mémoire épisodique + sémantique). Si altéré → risque d'impacter les autres mémoires (y compris procédurale en phase d'apprentissage).</p>
+      </div>
+    </div>
+    <p style="margin-top:0.5rem; font-size:0.88rem; color:var(--muted);">Bases cérébrales : frontal dorso-latéral (administrateur central + boucle phonologique) + pariétal (calepin visuo-spatial + buffer épisodique).</p>
+  </div>
+
+  <!-- 5. PLAINTE MNÉSIQUE & ANAMNÈSE -->
+  <p class="sub-title">📋 Plainte mnésique & Anamnèse</p>
+
+  <div class="card">
+    <h3>L'anamnèse — premier outil d'évaluation</h3>
+    <p>L'analyse de la plainte du patient et de son entourage est le <strong>1er outil de l'évaluation de la mémoire</strong>. La neuropsychologie est autant quantitative que qualitative.</p>
+    <ul style="margin-top:0.5rem;">
+      <li><strong>La plainte mnésique</strong> est très fréquente, mais peut avoir une origine non organique (anxiété, dépression, stress)</li>
+      <li>Une même plainte peut avoir des causes diverses → intérêt du bilan</li>
+      <li><strong>Anosognosie</strong> : absence de plainte malgré des troubles objectivés (ex. : Korsakoff) → ne pas se fier uniquement à la plainte</li>
+      <li><strong>Dysgnosie cognitive</strong> (Dalla Barba et al., 2015) : plainte forte sans difficulté objectivée → ne jamais objectiver ce profil ; proposer un suivi pour que le patient devienne sa propre norme</li>
+    </ul>
+    <p style="margin-top:0.5rem;">L'entretien semi-dirigé permet de <strong>spécifier la nature de la plainte</strong> et d'orienter le choix des outils.</p>
+  </div>
+
+  <!-- 6. OUTILS D'ÉVALUATION -->
+  <p class="sub-title">⚙️ Outils d'évaluation — ce qu'il faut maîtriser</p>
+
+  <div class="card">
+    <h3>Outils par système mnésique</h3>
+    <div class="two-col">
+      <div>
+        <p><span class="tag tag-tool">Mémoire épisodique</span></p>
+        <ul>
+          <li><strong>RLRI-16</strong> : rappel libre + rappel indicé, 16 mots en 4 catégories. Mesure encodage (RL1), stockage (différé), récupération spontanée ou indicée. Analyser intrusions et effet de l'indiçage.</li>
+          <li><strong>CVLT</strong> : liste lundi vs liste mardi, 5 essais. Calcul de Ia, RL, RI, RLLT, RILT, D'</li>
+          <li><strong>Figure de Rey</strong> : copie + rappel différé → mémoire visuo-spatiale non verbale. Encodage <em>implicite</em>.</li>
+        </ul>
+      </div>
+      <div>
+        <p><span class="tag tag-tool">Mémoire sémantique</span></p>
+        <ul>
+          <li><strong>Fluences verbales</strong> (2 min) : catégorielle (animaux, meubles, fruits) + formelle (P, V, R). Analyser clustering/switching, intrusions, persévérations.</li>
+          <li><strong>DO 80</strong> (Deloche & Hannequin, 1997) : 80 images à nommer</li>
+          <li><strong>BECS-GRECO</strong> : dénomination, appariement sémantique, questionnaire 6 attributs</li>
+          <li><strong>Pyramids & Palm Trees Test</strong> : appariement sémantique sans production verbale</li>
+          <li><strong>Dictée de mots irréguliers</strong> : régularisation = signe sémantique (dysorthographie de surface)</li>
+          <li><strong>Dessin sur ordre</strong> : après vérification des capacités grapho-motrices</li>
+          <li><strong>Semper Test</strong> (Laisney et al., 2009) : célébrités, familiarité, appariement, dénomination de visages</li>
+          <li><strong>Batterie EVE 10</strong> (Thomas-Antérion, 2008) : connaissances sur 10 événements publics 1950-2001</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:1rem;">
+      <p><span class="tag tag-tool">Fonctions exécutives & attention</span></p>
+      <ul>
+        <li><strong>TMT A & B</strong> : A = attention soutenue (vitesse de traitement), B = alternance (FE). Ratio TMT-B/A +++</li>
+        <li><strong>Stroop</strong> : dénomination + interférence. Score d'interférence = inhibition</li>
+        <li><strong>Empans endroit/envers</strong> (numériques + visuo-spatiaux) : MDT verbale et visuo-spatiale</li>
+        <li><strong>Mattis DRS</strong> : 5 sous-échelles (attention, initiation, construction, conceptualisation, mémoire)</li>
+        <li><strong>MMS</strong> : dépistage, 30 pts, cut-off ≈ 24 · <strong>MOCA</strong> : cut-off ≥ 26</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Fluences détail -->
+  <details>
+    <summary>⚙️ Fluences verbales — analyse qualitative</summary>
+    <div class="details-body">
+      <p>La fluence verbale évalue à la fois le <strong>stock sémantique</strong> et les <strong>processus stratégiques de récupération</strong>.</p>
+      <ul>
+        <li><strong>Fluence catégorielle</strong> (animaux, fruits…) : davantage liée à la <em>mémoire sémantique</em></li>
+        <li><strong>Fluence formelle</strong> (lettres P, V, R) : davantage liée aux <em>fonctions exécutives</em></li>
+      </ul>
+      <p style="margin-top:0.5rem;"><strong>Analyse qualitative :</strong></p>
+      <ul>
+        <li><strong>Clustering</strong> : regroupements en sous-catégories (ex. animaux domestiques). Plus les clusters sont grands → stock sémantique préservé</li>
+        <li><strong>Switching</strong> : changements de sous-catégorie → capacités de flexibilité (FE)</li>
+        <li><strong>Intrusions</strong> : mots hors critère → signe de désorganisation (fréquent dans la MA)</li>
+        <li><strong>Persévérations</strong> : répétitions → signe de troubles exécutifs</li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- Calculs CVLT -->
+  <details>
+    <summary>🧮 Calculs CVLT — formules à maîtriser</summary>
+    <div class="details-body">
+      <div class="schema-box">Ia  = [ ΣC − (ΣP + ΣI) ] / (16 × 5)  × 100
+RL ou RI moyen = [ ΣC − (ΣP + ΣI) ] / 16 × 100
+D' = 1 − [ (oublis + fausses reconnaissances) / nb items rappelés ] × 100</div>
+      <p><strong>Normes CVLT (55-80 ans) :</strong> Ia M=65 (±13) · RLCT M=64 (±20.9) · RICT M=71 (±17) · RLLT M=68 (±19) · RILT M=72 (±20)</p>
+      <p style="margin-top:0.5rem;"><strong>⚠ Intrusions</strong> = items produits non présents dans la liste → signe de désorganisation de l'encodage.</p>
+      <p><strong>Profil amnésique hippocampique</strong> : RL bas, RI bas ou non amélioré par indiçage, intrusions ++, rappel différé effondré → trouble authentique.</p>
+      <p><strong>Profil dysexécutif</strong> : RL bas, MAIS RI normal ou amélioré par indiçage, reconnaissance préservée → trouble apparent.</p>
+    </div>
+  </details>
+
+  <!-- 7. CAS CLINIQUE TYPE -->
+  <p class="sub-title">🔎 Cas type examen — profil neuropsychologique</p>
+
+  <div class="card">
+    <h3>Profils diagnostiques à distinguer</h3>
+    <table>
+      <thead><tr><th>Pathologie</th><th>Profil mnésique</th><th>Signes associés</th><th>Imagerie</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Alzheimer (MA)</strong></td>
+          <td>Amnésie antérograde ++ (RL bas, RI non amélioré), intrusions, trouble épisodique authentique + trouble sémantique</td>
+          <td>Manque du mot, troubles de reconnaissance</td>
+          <td>Atrophie temporal interne, hypomét. temporal + pariétal postérieur, cingulaire post., précuneus</td>
+        </tr>
+        <tr>
+          <td><strong>Démence sémantique (DS)</strong></td>
+          <td>ME épisodique préservée, MS dégradée (amodale)</td>
+          <td>Gradient Ribot inversé, agnosie amodale, apraxie idéatoire, égocentrisme cognitif</td>
+          <td>Atrophie temporal antérieur bilatérale (prédominance gauche)</td>
+        </tr>
+        <tr>
+          <td><strong>DFT (fronto-temporale)</strong></td>
+          <td>Troubles apparents (dysexécutifs) : RL bas, RI amélioré</td>
+          <td>Désinhibition, apathie, troubles comportementaux ++</td>
+          <td>Atrophie fronto-temporale, hypomét. frontal bilatéral</td>
+        </tr>
+        <tr>
+          <td><strong>DCL (Lewy)</strong></td>
+          <td>Variable selon le stade</td>
+          <td>Fluctuations, hallucinations visuelles, syndrome parkinsonien</td>
+          <td>Variable</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.5rem;"><strong>Cas Mme R (2024-2025) :</strong> 85 ans, atrophie temporale interne + pariétale/cingulaire postérieure, hypomét. temporal interne bilatéral → Profil MA probable (type hippocampique + atteinte sémantique).</p>
+  </div>
+
+  <details>
+    <summary>🔎 Méthode de réponse au cas pratique neuro</summary>
+    <div class="details-body">
+      <ol>
+        <li><strong>Lire tout le bilan</strong> avant de rédiger. Cocher ce qui est pathologique vs normal pour chaque test.</li>
+        <li><strong>Anamnèse</strong> : éléments pertinents (mode de début, évolution, plainte, entourage, gradient temporel, anosognosie ?)</li>
+        <li><strong>Hypothèses étiologiques</strong> : les argumenter et les discuter entre elles (MA vs DS vs DFT…)</li>
+        <li><strong>Interprétation du bilan</strong> : quel système mnésique ? quel processus fonctionnel ? trouble authentique ou apparent ? Lier les scores à la sémiologie.</li>
+        <li><strong>Conclusions et proposition d'accompagnement</strong> (rééducation, compensation, orientation)</li>
+      </ol>
+      <div class="warning-box"><strong>Ne jamais</strong> se contenter de "score pathologique" : faire le lien entre les résultats des tests, le type de mémoire altéré, les processus fonctionnels et la plainte du patient.</div>
+    </div>
+  </details>
+</div>
+
+<!-- ============================================================ -->
+<!--                  ONGLET DÉVELOPPEMENT                        -->
+<!-- ============================================================ -->
+<div id="panel-dev" class="tab-panel">
+  <div class="section-header">
+    <div class="section-dot"></div>
+    <h2>Psychologie du développement</h2>
+  </div>
+  <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.4rem;">Enseignant : Marc Zabalia (CM et TD)</p>
+
+  <div class="card">
+    <h3>L'examen psychologique de l'enfant — principes et recommandations</h3>
+    <p>L'examen psychologique de l'enfant est conditionné par :</p>
+    <div class="two-col" style="margin-top:0.5rem;">
+      <div>
+        <p><strong>Facteurs liés à l'enfant :</strong></p>
+        <ul>
+          <li>L'<strong>âge</strong> et le niveau développemental</li>
+          <li>Les caractéristiques développementales (langage, motricité, attention)</li>
+          <li>La <strong>personnalité</strong> (timidité, opposition, anxiété)</li>
+          <li>L'environnement familial et le contexte de vie</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong>Recommandations de pratique :</strong></p>
+        <ul>
+          <li>Adapter le <strong>cadre</strong> (espace, durée, matériel) à l'âge</li>
+          <li>Établir une alliance avec l'enfant ET les parents</li>
+          <li>Tenir compte de l'<strong>écosystème familial</strong></li>
+          <li>Ne pas isoler les résultats de leur contexte</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>L'écosystème familial (Bronfenbrenner)</h3>
+    <p>L'enfant évolue dans plusieurs systèmes imbriqués :</p>
+    <ul>
+      <li><strong>Microsystème</strong> : famille, école, pairs (contacts directs)</li>
+      <li><strong>Mésosystème</strong> : interactions entre microsystèmes (relation parents-école)</li>
+      <li><strong>Exosystème</strong> : travail des parents, ressources sociales (influence indirecte)</li>
+      <li><strong>Macrosystème</strong> : culture, valeurs sociales, politiques</li>
+    </ul>
+    <p style="margin-top:0.6rem;"><strong>Impact sur la démarche :</strong> La demande vient rarement de l'enfant seul. Il faut comprendre qui demande quoi, dans quel but. L'accord des deux parents est souvent nécessaire. Le contexte familial peut limiter l'examen (résistances parentales, conflits, secret familial).</p>
+    <div class="warning-box"><strong>Cas pratique type :</strong> Enfant adressé pour troubles du comportement ou difficultés scolaires → toujours explorer le système familial et la dynamique parentale.</div>
+  </div>
+
+  <details>
+    <summary>🟡 Facteurs limitant l'examen psychologique de l'enfant</summary>
+    <div class="details-body">
+      <ul>
+        <li><strong>Âge très jeune</strong> : limites des épreuves standardisées, résultats moins fiables</li>
+        <li><strong>Barrière linguistique</strong> : risque de sous-estimation des capacités</li>
+        <li><strong>Handicap sensoriel ou moteur</strong> : adapter les épreuves</li>
+        <li><strong>Opposition/refus</strong> : ne pas forcer, reprogrammer si nécessaire</li>
+        <li><strong>Contexte de placement / conflit parental</strong> : biais potentiel sur la coopération</li>
+        <li><strong>Anxiété de performance</strong> : très fréquente, modère les résultats</li>
+        <li><strong>Immaturité affective</strong> : interprétation des résultats à adapter</li>
+      </ul>
+    </div>
+  </details>
+
+  <p class="sub-title">★ Probabilités examen — Développement</p>
+
+  <div class="card" style="background: var(--dev-soft);">
+    <h3>⭐⭐⭐ Très probable — Place de l'écosystème familial</h3>
+    <p>Question posée en session 1 2024-2025. Très régulièrement demandé : comment les recommandations encadrent la pratique ? Comment les caractéristiques de l'enfant (âge, personnalité, environnement) conditionnent la démarche ?</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--                  ONGLET CLINIQUE                             -->
+<!-- ============================================================ -->
+<div id="panel-psych" class="tab-panel">
+  <div class="section-header">
+    <div class="section-dot"></div>
+    <h2>Psychopathologie clinique</h2>
+  </div>
+  <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.4rem;">Enseignante CM : Astrid Hirschelmann · TD : Lemercier-Dugarin, Beaucé, Vivien, Bazire-Valauney</p>
+
+  <div class="card">
+    <h3>Les 4 catégories d'outils du psychologue clinicien</h3>
+    <div class="two-col">
+      <div>
+        <p><span class="tag tag-tool">Entretiens cliniques</span></p>
+        <p>Outil relationnel central. Peut être libre, semi-directif ou directif. Permet d'établir l'alliance thérapeutique, recueillir l'anamnèse, explorer la plainte. Intérêt : contextualisation, subjectivité, relation.</p>
+        <p style="margin-top:0.8rem;"><span class="tag tag-tool">Tests projectifs / Dessins</span></p>
+        <p>Stimuli ambigus ou production libre → révèle le monde interne, les conflits psychiques, les défenses. Ex : Rorschach, TAT, HTP, dessin de la famille. Accès à l'inconscient, médiation possible.</p>
+      </div>
+      <div>
+        <p><span class="tag tag-tool">Échelles de personnalité</span></p>
+        <p>Questionnaires standardisés, auto ou hétéro-évaluation. Ex : MMPI-2, SCL-90, échelles d'anxiété/dépression. Intérêt : objectivation, comparaison normative.</p>
+        <p style="margin-top:0.8rem;"><span class="tag tag-tool">Tests psychométriques spécifiques</span></p>
+        <p>Épreuves étalonnées évaluant une fonction précise (intelligence, mémoire…). Résultats quantifiables, comparables à des normes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Les médiations en psychologie clinique</h3>
+    <p>La <strong>médiation</strong> est un support tiers entre patient et thérapeute, facilitant l'expression et la mise en sens. Elle n'est pas une fin en soi mais un vecteur de la relation thérapeutique.</p>
+    <ul style="margin-top:0.5rem;">
+      <li><strong>Médiation artistique</strong> (dessin, peinture, modelage) : expression non verbale, contenance, créativité</li>
+      <li><strong>Médiation corporelle</strong> : jeu, danse, théâtre → vécu corporel, identité</li>
+      <li><strong>Médiation narrative</strong> : conte, écriture → mise en récit, identité narrative</li>
+      <li><strong>Médiation par le jeu</strong> : particulièrement adaptée à l'enfant</li>
+    </ul>
+    <p style="margin-top:0.5rem;"><strong>Fonctions :</strong> contenir l'angoisse · permettre l'expression · favoriser l'élaboration · créer du lien · développer les capacités créatrices.</p>
+  </div>
+
+  <details>
+    <summary>🔴 Méthode — analyse de vignettes cliniques</summary>
+    <div class="details-body">
+      <ol>
+        <li><strong>Relever les signes cliniques</strong> pertinents (comportement, affect, symptômes somatiques, relations familiales, histoire)</li>
+        <li><strong>Formuler des hypothèses diagnostiques</strong> argumentées (et les discuter)</li>
+        <li><strong>Proposer des outils</strong> d'évaluation adaptés à la situation et à l'âge</li>
+        <li><strong>Proposer un type de médiation</strong> en justifiant son intérêt dans ce cas précis</li>
+        <li><strong>Identifier les axes psychologiques</strong> prioritaires à travailler en thérapie</li>
+      </ol>
+      <p style="margin-top:0.5rem;"><strong>Signes fréquents dans les sujets :</strong> somatisation, dissociation, dépression masquée, troubles du comportement, problématiques familiales, trauma.</p>
+    </div>
+  </details>
+
+  <p class="sub-title">★ Probabilités examen — Clinique</p>
+
+  <div class="card" style="background: var(--psych-soft);">
+    <h3>⭐⭐⭐ Très probable — Cas clinique enfant/ado avec outils + médiation</h3>
+    <p>Structure récurrente : vignette clinique complexe → 3-4 questions : (1) signes cliniques, (2) outils adaptés, (3) type de médiation + justification, (4) axes thérapeutiques. Cas souvent : enfant en contexte familial difficile, ado en souffrance, trouble dissociatif/somatisation.</p>
+  </div>
+
+  <div class="card" style="background: var(--psych-soft);">
+    <h3>⭐⭐ Probable — Définir les 4 catégories d'outils + exemples</h3>
+    <p>Question récurrente en 2022, 2023, 2024. Définir chaque catégorie, citer des exemples concrets, préciser l'intérêt dans la situation donnée.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--                  ONGLET COGNITIF                             -->
+<!-- ============================================================ -->
+<div id="panel-cogn" class="tab-panel">
+  <div class="section-header">
+    <div class="section-dot"></div>
+    <h2>Psychologie cognitive</h2>
+  </div>
+  <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.4rem;">Enseignante : Agnès Salinas (CM et TD)</p>
+
+  <div class="card">
+    <h3>Les tests psychométriques — critères de qualité</h3>
+    <p><strong>But :</strong> mesurer objectivement un construit psychologique via des épreuves standardisées et étalonnées.</p>
+    <table style="margin-top:0.6rem;">
+      <thead><tr><th>Critère</th><th>Définition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fidélité</strong></td><td>Reproductibilité des résultats (test-retest, inter-juges)</td></tr>
+        <tr><td><strong>Validité</strong></td><td>Le test mesure bien ce qu'il prétend mesurer (de construit, de contenu, critériée)</td></tr>
+        <tr><td><strong>Standardisation</strong></td><td>Conditions de passation identiques pour tous</td></tr>
+        <tr><td><strong>Étalonnage</strong></td><td>Normes établies sur un échantillon représentatif</td></tr>
+        <tr><td><strong>Sensibilité</strong></td><td>Capacité à détecter des différences entre individus</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Le WISC — échelle de Wechsler pour les enfants</h3>
+    <p><strong>WISC-IV — 4 indices :</strong></p>
+    <ul>
+      <li><strong>ICV</strong> (Indice de Compréhension Verbale) : raisonnement verbal, connaissances → <em>pas de vitesse de traitement</em></li>
+      <li><strong>IRP</strong> (Indice de Raisonnement Perceptif) : raisonnement non verbal, visuo-spatial</li>
+      <li><strong>IMT</strong> (Indice de Mémoire de Travail) : maintien et manipulation en MCT</li>
+      <li><strong>IVT</strong> (Indice de Vitesse de Traitement) : rapidité et automaticité</li>
+    </ul>
+    <p style="margin-top:0.6rem;"><strong>QI Total ≠ seul intérêt :</strong> le profil (disparités entre indices) est souvent plus informatif que le QI global.</p>
+    <p style="margin-top:0.4rem;"><strong>Subtest Similitudes :</strong> pensée catégorielle et abstraite. Entre 6-7 ans, lié à la maîtrise de la lecture (accès au sens, abstraction).</p>
+    <div class="warning-box"><strong>Le psychologue ne commence pas toujours par le premier item</strong> : selon l'âge et le niveau présumé, un point d'entrée différent est choisi (règles de départ et de retour en arrière).</div>
+  </div>
+
+  <details>
+    <summary>🟢 Construction d'un test psychométrique — procédure</summary>
+    <div class="details-body">
+      <ol>
+        <li>Définir le <strong>construit</strong> théoriquement (ex : anxiété, estime de soi, stress…)</li>
+        <li>Identifier les <strong>composantes</strong> du construit</li>
+        <li>Élaborer des <strong>items</strong> correspondant à chaque composante</li>
+        <li>Choisir une <strong>échelle de réponse</strong> (Likert, binaire, etc.)</li>
+        <li>Vérifier la <strong>validité</strong> et la <strong>fidélité</strong></li>
+        <li>Étalonner sur un <strong>échantillon représentatif</strong></li>
+      </ol>
+      <p style="margin-top:0.5rem;"><strong>Quand NE PAS utiliser l'IVT :</strong> profils anxieux, troubles moteurs, TOC → choisir des subtests non chronométrés (ICV ou IRP).</p>
+    </div>
+  </details>
+
+  <div class="card">
+    <h3>Anxiété et performance — impact sur le choix des tests</h3>
+    <ul>
+      <li>Éviter les épreuves chronométrées (IVT) → préférer l'ICV ou l'IRP</li>
+      <li>Chez l'enfant : anxiété de performance fréquente → adapter le cadre (pauses, formulation rassurante)</li>
+      <li>Chez l'adulte : évaluer aussi le contexte (burn-out, dépression) avant de conclure à un déficit cognitif</li>
+    </ul>
+  </div>
+
+  <p class="sub-title">★ Probabilités examen — Cognitif</p>
+
+  <div class="card" style="background: var(--cogn-soft);">
+    <h3>⭐⭐⭐ Très probable — Questions sur le WISC</h3>
+    <p>Questions fréquentes : pourquoi l'ICV ne mesure pas la vitesse ? Le psychologue commence-t-il toujours par le premier item ? Que mesure le subtest Similitudes ? Le QI total est-il suffisant ? → Décrire les 4 indices et leur intérêt différentiel.</p>
+  </div>
+
+  <div class="card" style="background: var(--cogn-soft);">
+    <h3>⭐⭐ Probable — Construire et critiquer un test psychométrique</h3>
+    <p>Récurrent 2022, 2023, 2024, session 2 : définir les critères de qualité, proposer un construit et sa mesure, critiquer un questionnaire (positif et négatif). Lien mesure-construit.</p>
+  </div>
+
+  <div class="card" style="background: var(--card-bg);">
+    <h3>💡 Conseils méthode pour le partiel</h3>
+    <ul>
+      <li><strong>Toujours justifier</strong> : ne jamais citer un outil sans expliquer pourquoi il est pertinent dans ce cas précis.</li>
+      <li><strong>Respecter la structure des questions</strong> : si 4 questions → 4 parties clairement délimitées.</li>
+      <li><strong>Cas pratique neuro</strong> : lire TOUT le bilan avant de rédiger, noter pathologique vs normal.</li>
+      <li><strong>Ne pas confondre</strong> : dégradation centrale ≠ déficit d'accès · troubles authentiques ≠ apparents · QI total ≠ profil cognitif.</li>
+      <li><strong>Formules CVLT</strong> : à connaître par cœur + normes par tranche d'âge.</li>
+      <li><strong>Intro/conclusion courtes</strong> : l'examinateur veut du contenu concret.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>UE29 — Synthèse basée sur les CM de Beaunieux (neuropsychologie), les annales 2022-2024 et le sujet 2024-2025.</p>
+  <p style="margin-top:0.3rem;">Bon courage pour ton partiel ! 🌸</p>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      document.getElementById('panel-' + target).classList.add('active');
+
+      // Scroll to top of content
+      window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
